@@ -42,3 +42,13 @@ class Journal(Base):
 
     journal_transactions = relationship('JournalTransaction', back_populates='journal')
     
+# Define the Student class with attributes and relationships
+class Student(Base):
+    __tablename__ = 'students'
+
+    id = Column(Integer, primary_key=True)
+    student_id = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+
+    book_transactions = relationship('BookTransaction', back_populates='student')
+    journal_transactions = relationship('JournalTransaction', back_populates='student')
