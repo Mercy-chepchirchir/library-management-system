@@ -138,3 +138,63 @@ def return_item():
             
     else:
         print("Student not found.")
+        
+def pay_late_fees():
+    session = Session()
+
+    student_id = input("Enter Student ID: ")
+    
+    # Check if the student exists
+    student = session.query(Student).filter_by(student_id=student_id).first()
+
+    if student:
+        item_type = input("Enter 'book' or 'journal' for the item you want to return: ")
+        search_term = input(f"Enter a search term for the {item_type} you want to return: ")
+
+        # Perform a search query to find items of the specified type matching the search term
+        items = session.query(Book if item_type == 'book' else Journal).filter(
+            Book.title.like(f"%{search_term}%") if item_type == 'book' else Journal.title.like(f"%{search_term}%")
+        ).all()
+
+        if not items:
+            print(f"No {item_type}s found matching your search.")
+            return
+
+        print(f"{item_type.capitalize()}s found:")
+        for i, item in enumerate(items, start=1):
+            print(f"{i}. {item_type.capitalize()} Title: {item.title}, {'Author' if item_type == 'book' else 'Editor'}: {item.author if item_type == 'book' else item.editor}")
+
+        selection = input(f"Enter the number of the {item_type} you want to pay late fees for: ")
+        try:
+            # convert the user's input to an integer
+            selection = int(selection)
+            if 1 <= selection <= len(items):
+                selected_item = items[selection - 1]
+
+                # Check if the student has borrowed the selected item
+                if item_type == 'book':
+                    transaction = session.query(BookTransaction).filter_by(student_id=student.id, book_id=selected_item.id).first()
+                else:
+                    transaction = session.query(JournalTransaction).filter_by(student_id=student.id, journal_id=selected_item.id).first()
+
+                if transaction:
+                    # Update the item's available copies and update the transaction record
+                    selected_item.available_copies += 1
+                    
+                    session.delete(transaction)
+                    
+                    session.commit()
+                    
+                    print(f"{student.name} has successfully payed late fees for '{selected_item.title}'.")
+
+                else:
+                    print(f"Student has not borrowed this {item_type}.")
+            
+            else:
+                print("Invalid selection.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            
+    else:
+        print("Student not found.")
+            
