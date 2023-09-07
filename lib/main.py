@@ -197,4 +197,20 @@ def pay_late_fees():
             
     else:
         print("Student not found.")
+        
+def search_library():
+    session = Session()
+
+    search_term = input("Enter title of book/journal to search: ")
+    books = session.query(Book).filter(Book.title.ilike(f"%{search_term}%")).all()
+    journals = session.query(Journal).filter(Journal.title.ilike(f"%{search_term}%")).all()
+
+    print("\nBooks found:")
+    for book in books:
+        print(f"- Title: {book.title}, Author: {book.author}")
+
+    print("\nJournals found:")
+    for journal in journals:
+        print(f"- Title: {journal.title}, Editor: {journal.editor}")
+        
             
