@@ -35,4 +35,21 @@ def initialize_db():
         #Increase the book_id number for the next iteration.
         book_id_number = book_id_number + 1
         
+    journals = [] #initialize an empty list journal where the generated journal id will be stored
+    journal_id_number = 1
+
+    for item in range(100):
+        journal_id_value = f"J0{journal_id_number}"
+        #generate a random integer between 1 and 100, representing the total number of copies of this journal.
+        total_copies_number = random.randint(1, 100)
+        
+        journal = Journal(
+            journal_id=journal_id_value,
+            title=fake.catch_phrase(),
+            editor=fake.name(),
+            total_copies=total_copies_number,
+            available_copies=random.randint(1, total_copies_number),
+            fee_per_day=10
+        )
+        
         
