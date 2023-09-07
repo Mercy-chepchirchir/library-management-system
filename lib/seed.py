@@ -27,4 +27,7 @@ def initialize_db():
         )
         
         session.add(book) #Add the book object to the database session
+        session.commit() #persists data in the database
+        
+        
         
