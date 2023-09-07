@@ -53,6 +53,7 @@ def initialize_db():
         )
         session.add(journal)#Add the journal object to the database session
         session.commit()#persists data in the database
+        
         #The generated journal_id_value is added to the journals list
         journals.append(journal_id_value)
         
