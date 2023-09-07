@@ -6,7 +6,13 @@ from  models import Session, Book, Journal, Student
 def initialize_db():
     session = Session()
     
- #initializes an instance of the faker class which is sed to generate fake data
+ # Generating Fake Data for Books:
     fake = Faker()
     
+    books = []
+    book_id_number = 1 #initialize the book id number to start at 1
+    for item in range(100):
+        book_id_value = f"B0{book_id_number}"
+        total_copies_number = random.randint(1, 100)
+        
   
