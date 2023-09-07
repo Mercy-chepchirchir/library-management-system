@@ -51,5 +51,6 @@ def initialize_db():
             available_copies=random.randint(1, total_copies_number),
             fee_per_day=10
         )
-        
+        session.add(journal)#Add the journal object to the database session
+        session.commit()#persists data in the database
         
