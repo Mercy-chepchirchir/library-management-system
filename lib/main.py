@@ -217,7 +217,7 @@ def main():
     # Check if the database file exists
     db_file = Path("library.db")
     if not db_file.is_file():
-        initialize_db()
+      initialize_db()
     
     while True:
         print("\nLibrary Menu:")
