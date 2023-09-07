@@ -63,3 +63,78 @@ def borrow_item():
             print("Invalid input. Please enter a number.")
     else:
         print("Student not found.")
+
+def return_item():
+    session = Session()
+
+    student_id = input("Enter Student ID: ")
+    
+    # Check if the student exists
+    student = session.query(Student).filter_by(student_id=student_id).first()
+
+    if student:
+        item_type = input("Enter 'book' or 'journal' for the item you want to return: ")
+        search_term = input(f"Enter a search term for the {item_type} you want to return: ")
+
+        # Perform a search query to find items of the specified type matching the search term
+        items = session.query(Book if item_type == 'book' else Journal).filter(
+            Book.title.like(f"%{search_term}%") if item_type == 'book' else Journal.title.like(f"%{search_term}%")
+        ).all()
+
+        if not items:
+            print(f"No {item_type}s found matching your search.")
+            return
+
+        print(f"{item_type.capitalize()}s found:")
+        for i, item in enumerate(items, start=1):
+            print(f"{i}. {item_type.capitalize()} Title: {item.title}, {'Author' if item_type == 'book' else 'Editor'}: {item.author if item_type == 'book' else item.editor}")
+
+        selection = input(f"Enter the number of the {item_type} you want to return: ")
+        try:
+            #convert the user's input to an integer.
+            selection = int(selection)
+            #checks if the selected number is within the valid range of item indices
+            if 1 <= selection <= len(items):
+                # If selection is valid, it assigns the selected item to the selected_item variable
+                selected_item = items[selection - 1]
+
+                # Check if the student has borrowed the selected item
+                if item_type == 'book':
+                    transaction = session.query(BookTransaction).filter_by(student_id=student.id, book_id=selected_item.id).first()
+                else:
+                    transaction = session.query(JournalTransaction).filter_by(student_id=student.id, journal_id=selected_item.id).first()
+
+                if transaction:
+                    # Calculate late fee if the item is returned late
+                    return_date = transaction.return_date
+                    
+                    today = datetime.now()
+                    if today > return_date:
+                        late_days = (today - return_date).days
+                        #calculates the late fee based on the number of late days and the item's per-day late fee.#
+                        late_fee = late_days * (selected_item.fee_per_day if item_type == 'book' else selected_item.fee_per_day)
+                        transaction.late_fee = late_fee  # Update the late fee in the transaction
+                        print(f"Late fee: ${late_fee:.2f}")
+                        print(f"{student.name} should pay the Late fee: ${late_fee:.2f} of the '{selected_item.title}'.")
+                        
+                    else:
+                        # Check if there are no late fees, and then delete the transaction
+                        if transaction.late_fee == 0.00:
+                            session.delete(transaction)
+                        print(f"{student.name} has successfully returned '{selected_item.title}'.")
+                    
+                        # Update the item's available copies and update the transaction record
+                        selected_item.available_copies += 1
+                    
+                    session.commit()#commits changes to the database session
+
+                else:
+                    print(f"Student has not borrowed this {item_type}.")
+            
+            else:
+                print("Invalid selection.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            
+    else:
+        print("Student not found.")
