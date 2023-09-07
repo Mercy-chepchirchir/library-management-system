@@ -28,3 +28,17 @@ class Book(Base):
 
     book_transactions = relationship('BookTransaction', back_populates='book')
     
+# Define the Journal class with attributes and relationships
+class Journal(Base):
+    __tablename__ = 'journals'
+
+    id = Column(Integer, primary_key=True)
+    journal_id = Column(String, unique=True, nullable=False)
+    title = Column(String, nullable=False)
+    editor = Column(String, nullable=False)
+    total_copies = Column(Integer, nullable=False, default=1)
+    available_copies = Column(Integer, nullable=False, default=1)
+    fee_per_day = Column(Float, default=0.25)  # Adjust fee as needed
+
+    journal_transactions = relationship('JournalTransaction', back_populates='journal')
+    
