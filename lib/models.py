@@ -66,3 +66,18 @@ class BookTransaction(Base):
     student = relationship('Student', back_populates='book_transactions')
     book = relationship('Book', back_populates='book_transactions')
     
+# Define the JournalTransaction class with attributes and relationships
+class JournalTransaction(Base):
+    __tablename__ = 'journal_transactions'
+
+    id = Column(Integer, primary_key=True)
+    student_id = Column(Integer, ForeignKey('students.id'), nullable=False)
+    return_date = Column(DateTime)
+    journal_id = Column(Integer, ForeignKey('journals.id'), nullable=False)
+    late_fee = Column(Float, default=0.00)
+    
+    student = relationship('Student', back_populates='journal_transactions')
+    journal = relationship('Journal', back_populates='journal_transactions')
+    
+# Create the database tables based on the defined models
+Base.metadata.create_all(engine)
