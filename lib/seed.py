@@ -15,4 +15,16 @@ def initialize_db():
         book_id_value = f"B0{book_id_number}"
         total_copies_number = random.randint(1, 100)
         
-  
+        # Create a Book object with the generated data.
+        book = Book(
+            book_id=book_id_value,
+            title=fake.catch_phrase(),
+            author=fake.name(),
+            total_copies=total_copies_number,
+            #rendint returns a random integer value between the two lower and higher limits
+            available_copies=random.randint(1, total_copies_number),
+            fee_per_day=10
+        )
+        
+       
+        
