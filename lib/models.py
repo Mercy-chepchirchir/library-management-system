@@ -52,3 +52,17 @@ class Student(Base):
 
     book_transactions = relationship('BookTransaction', back_populates='student')
     journal_transactions = relationship('JournalTransaction', back_populates='student')
+
+# Define the BookTransaction class with attributes and relationships
+class BookTransaction(Base):
+    __tablename__ = 'book_transactions'
+
+    id = Column(Integer, primary_key=True)
+    student_id = Column(Integer, ForeignKey('students.id'), nullable=False)
+    return_date = Column(DateTime)
+    book_id = Column(Integer, ForeignKey('books.id'), nullable=False)
+    late_fee = Column(Float, default=0.00)
+    
+    student = relationship('Student', back_populates='book_transactions')
+    book = relationship('Book', back_populates='book_transactions')
+    
