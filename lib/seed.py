@@ -26,5 +26,5 @@ def initialize_db():
             fee_per_day=10
         )
         
-       
+        session.add(book) #Add the book object to the database session
         
