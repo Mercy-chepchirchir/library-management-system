@@ -29,5 +29,10 @@ def initialize_db():
         session.add(book) #Add the book object to the database session
         session.commit() #persists data in the database
         
+        #Add the generated book_id to the 'books' list.
+        books.append(book_id_value)
+        
+        #Increase the book_id number for the next iteration.
+        book_id_number = book_id_number + 1
         
         
