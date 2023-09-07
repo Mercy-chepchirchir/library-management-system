@@ -213,4 +213,36 @@ def search_library():
     for journal in journals:
         print(f"- Title: {journal.title}, Editor: {journal.editor}")
         
+def main():
+    # Check if the database file exists
+    db_file = Path("library.db")
+    if not db_file.is_file():
+        initialize_db()
+    
+    while True:
+        print("\nLibrary Menu:")
+        print("1. Borrow Item")
+        print("2. Return Item")
+        print("3. Pay Late Fees")
+        print("4. Search Library")
+        print("5. Quit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            borrow_item()
+        elif choice == "2":
+            return_item()
+        elif choice == "3":
+            pay_late_fees()
+        elif choice == "4":
+            search_library()
+        elif choice == "5":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please choose a valid option.")
+
+if __name__ == "__main__":
+    main()
             
